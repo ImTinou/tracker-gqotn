@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ITEM_CONFIG } from '../constants/itemConfig';
 
 const ItemImage = ({ assetId, className, alt = 'Item' }) => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -11,15 +12,15 @@ const ItemImage = ({ assetId, className, alt = 'Item' }) => {
         setLoading(true);
         setError(false);
 
-        // Use Roblox thumbnails API
+        // Use Vercel proxy to avoid CORS issues
         const response = await fetch(
-          `https://thumbnails.roblox.com/v1/assets?assetIds=${assetId}&returnPolicy=PlaceHolder&size=420x420&format=Png`
+          `${ITEM_CONFIG.apiBaseUrl}/api/thumbnail?assetId=${assetId}`
         );
 
         const data = await response.json();
 
-        if (data.data && data.data.length > 0 && data.data[0].imageUrl) {
-          setImageUrl(data.data[0].imageUrl);
+        if (data.imageUrl) {
+          setImageUrl(data.imageUrl);
         } else {
           setError(true);
         }

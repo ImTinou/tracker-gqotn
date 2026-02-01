@@ -169,6 +169,7 @@ export const fetchCompleteMarketData = async () => {
  * @param {string} size - Thumbnail size (default: '420x420')
  * @returns {string} Thumbnail URL
  */
-export const getItemThumbnail = (assetId = ITEM_CONFIG.assetId, size = '420x420') => {
-  return `https://www.roblox.com/asset-thumbnail/image?assetId=${assetId}&width=${size.split('x')[0]}&height=${size.split('x')[1]}&format=png`;
+export const getItemThumbnail = (assetId = ITEM_CONFIG.assetId, size = '420') => {
+  // Use Roblox thumbnail API - returns direct image URL
+  return `https://thumbnails.roblox.com/v1/assets?assetIds=${assetId}&returnPolicy=PlaceHolder&size=${size}x${size}&format=Png&isCircular=false`;
 };

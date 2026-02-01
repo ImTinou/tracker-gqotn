@@ -17,34 +17,40 @@ export const fetchItemData = async (itemId = ITEM_CONFIG.assetId) => {
   }
 
   try {
-    // Use Vercel serverless function to avoid CORS issues
-    const response = await axios.get(`${ITEM_CONFIG.apiBaseUrl}/api/rolimons`);
-
-    const allItems = response.data.items;
+    // First, try to get from the bulk API
+    const bulkResponse = await axios.get(`${ITEM_CONFIG.apiBaseUrl}/api/rolimons`);
+    const allItems = bulkResponse.data.items;
     const itemArray = allItems[itemId];
 
-    if (!itemArray) {
-      throw new Error('Item not found in Rolimons data');
+    if (itemArray) {
+      // Found in bulk API - use array format
+      const enrichedData = {
+        assetId: itemId,
+        name: itemArray[0],
+        acronym: itemArray[1],
+        rap: itemArray[2],
+        value: itemArray[3],
+        default_value: itemArray[4],
+        demand: itemArray[5],
+        trend: itemArray[6],
+        rare: true,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      setCache(cacheKey, enrichedData, ITEM_CONFIG.cache.itemData);
+      return enrichedData;
     }
 
-    // Rolimons returns data as array: [name, acronym, rap, value, default_value, demand, trend, ...]
-    const enrichedData = {
-      assetId: itemId,
-      name: itemArray[0],
-      acronym: itemArray[1],
-      rap: itemArray[2],
-      value: itemArray[3],
-      default_value: itemArray[4],
-      demand: itemArray[5],
-      trend: itemArray[6],
-      rare: true,
-      lastUpdated: new Date().toISOString(),
-    };
+    // Not in bulk API - try individual scraping for UGC/newer items
+    console.log(`Item ${itemId} not in bulk API, trying individual scraping...`);
+    const individualResponse = await axios.get(
+      `${ITEM_CONFIG.apiBaseUrl}/api/rolimons-item?itemId=${itemId}`
+    );
 
-    // Cache the data
+    const enrichedData = individualResponse.data;
     setCache(cacheKey, enrichedData, ITEM_CONFIG.cache.itemData);
-
     return enrichedData;
+
   } catch (error) {
     console.error('Error fetching item data:', error);
     throw error;

@@ -73,24 +73,36 @@ export const fetchPriceHistory = async (itemId = ITEM_CONFIG.assetId) => {
   }
 
   try {
-    // Try to fetch from Roblox Economy API with CORS proxy
-    // Use Vercel serverless function to avoid CORS issues
-    const response = await axios.get(
-      `${ITEM_CONFIG.apiBaseUrl}/api/roblox?assetId=${itemId}`
-    );
+    // DON'T use Roblox API - it returns fake/incorrect/old data
+    // Instead, use only Rolimons RAP/Value data which is accurate
+    const itemData = await fetchItemData(itemId);
 
-    const data = response.data;
+    // Create minimal data structure based on REAL Rolimons data only
+    const now = new Date();
+    const mockData = {
+      assetStock: null,
+      sales: null,
+      numberRemaining: null,
+      recentAveragePrice: itemData.rap,
+      originalPrice: itemData.default_value || null,
+      // Only provide current value as a single data point - no fake history
+      priceDataPoints: [
+        {
+          value: itemData.value || itemData.rap,
+          date: now.toISOString(),
+        }
+      ],
+      volumeDataPoints: [],
+      _isRolimonsOnly: true,
+    };
 
     // Cache the data
-    setCache(cacheKey, data, ITEM_CONFIG.cache.priceHistory);
+    setCache(cacheKey, mockData, ITEM_CONFIG.cache.priceHistory);
 
-    return data;
+    return mockData;
   } catch (error) {
-    console.error('Error fetching price history:', error);
-
-    // Fallback: Generate mock data from Rolimons data
-    console.warn('Using fallback mock data for price history');
-    return generateMockPriceHistory(itemId);
+    console.error('Error fetching price data:', error);
+    throw error;
   }
 };
 

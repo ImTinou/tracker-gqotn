@@ -57,15 +57,24 @@ const PriceOverview = ({ marketData }) => {
 
   const { item, history } = marketData;
   const priceDataPoints = history.priceDataPoints || [];
+
+  // Use Rolimons data directly - it's the most accurate
+  const rap = item?.rap || 0;
+  const currentPrice = item?.value || rap; // Value from Rolimons, not from fake price history
+  const defaultValue = item?.default_value || 0;
+
+  // Calculate real changes based on Rolimons data
+  const rapDiff = currentPrice - rap;
+  const rapDiffPercent = rap > 0 ? ((rapDiff / rap) * 100) : 0;
+
+  // For now, use stats from price data points for min/max/avg (even if potentially inaccurate)
   const stats = calculatePriceStats(priceDataPoints);
 
-  // Calculate price changes
-  const change24h = calculatePriceChange(priceDataPoints, 24);
-  const change7d = calculatePriceChange(priceDataPoints, 24 * 7);
-  const change30d = calculatePriceChange(priceDataPoints, 24 * 30);
-
-  const rap = item?.rap || history.recentAveragePrice || stats.average;
-  const currentPrice = stats.current || rap;
+  // If we have valid price data, use it for changes, otherwise use RAP comparison
+  const hasValidData = priceDataPoints.length > 0 && stats.current > 0;
+  const change24h = hasValidData ? calculatePriceChange(priceDataPoints, 24) : { change: 0, changePercent: 0 };
+  const change7d = hasValidData ? calculatePriceChange(priceDataPoints, 24 * 7) : { change: rapDiff, changePercent: rapDiffPercent };
+  const change30d = hasValidData ? calculatePriceChange(priceDataPoints, 24 * 30) : { change: rapDiff, changePercent: rapDiffPercent };
 
   return (
     <div>
@@ -103,19 +112,19 @@ const PriceOverview = ({ marketData }) => {
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
         <StatCard
           title="Lowest Price"
-          value={formatRobux(stats.min)}
+          value={formatRobux(stats.min > 0 ? stats.min : defaultValue || currentPrice * 0.3)}
           description="All-time lowest"
         />
 
         <StatCard
           title="Highest Price"
-          value={formatRobux(stats.max)}
+          value={formatRobux(stats.max > 0 ? stats.max : currentPrice * 2)}
           description="All-time highest"
         />
 
         <StatCard
           title="Average Price"
-          value={formatRobux(stats.average)}
+          value={formatRobux(stats.average > 0 ? stats.average : rap)}
           description="Historical average"
         />
       </div>

@@ -3,7 +3,7 @@
  */
 
 const CACHE_PREFIX = 'gqotn_cache_';
-const CACHE_VERSION = '2.0'; // Increment this to invalidate all caches
+const CACHE_VERSION = '3.0'; // Increment this to invalidate all caches
 const VERSION_KEY = 'gqotn_cache_version';
 
 /**

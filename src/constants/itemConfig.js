@@ -16,7 +16,7 @@ export const ITEM_CONFIG = {
 
   // API Configuration
   // Vercel serverless API for CORS-free access
-  apiBaseUrl: import.meta.env.VITE_API_URL || 'https://tracker-tinou.vercel.app',
+  apiBaseUrl: import.meta.env.VITE_API_URL || 'https://tracker-tinou1.vercel.app',
 
   apis: {
     rolimons: {

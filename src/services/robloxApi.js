@@ -41,13 +41,13 @@ export const fetchItemData = async (itemId = ITEM_CONFIG.assetId) => {
       return enrichedData;
     }
 
-    // Not in bulk API - try individual scraping for UGC/newer items
-    console.log(`Item ${itemId} not in bulk API, trying individual scraping...`);
-    const individualResponse = await axios.get(
-      `${ITEM_CONFIG.apiBaseUrl}/api/rolimons-item?itemId=${itemId}`
+    // Not in bulk API - try FULL scraping for all data (ownership, sales, etc.)
+    console.log(`Item ${itemId} not in bulk API, trying full scraping...`);
+    const fullResponse = await axios.get(
+      `${ITEM_CONFIG.apiBaseUrl}/api/rolimons-full?itemId=${itemId}`
     );
 
-    const enrichedData = individualResponse.data;
+    const enrichedData = fullResponse.data;
     setCache(cacheKey, enrichedData, ITEM_CONFIG.cache.itemData);
     return enrichedData;
 

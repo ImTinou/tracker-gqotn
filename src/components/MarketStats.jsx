@@ -16,9 +16,13 @@ const MarketStats = ({ marketData }) => {
     );
   }
 
-  const { history } = marketData;
+  const { item, history } = marketData;
   const volumeDataPoints = history.volumeDataPoints || [];
   const priceDataPoints = history.priceDataPoints || [];
+
+  // Extract ownership and sales data from scraped Rolimons data
+  const ownership = item?.ownership || {};
+  const sales = item?.sales || {};
 
   const volumeStats = calculateVolumeStats(volumeDataPoints);
   const demandLevel = calculateDemandLevel(volumeStats.average);
@@ -80,7 +84,9 @@ const MarketStats = ({ marketData }) => {
                 {demandLevel}
               </span>
               <span className="text-sm text-gray-400">
-                {volumeStats.average.toFixed(1)} sales/day avg
+                {sales.avgDailySales !== null && sales.avgDailySales !== undefined
+                  ? `${sales.avgDailySales.toFixed(1)} sales/day (Rolimons)`
+                  : `${volumeStats.average.toFixed(1)} sales/day avg`}
               </span>
             </div>
           </div>
@@ -131,22 +137,80 @@ const MarketStats = ({ marketData }) => {
           </div>
         </div>
 
-        {/* Stock Information */}
-        {history.assetStock !== undefined && (
+        {/* Ownership Information */}
+        {(ownership.totalCopies !== null || history.assetStock !== undefined) && (
           <div className="border-t border-white/10 pt-6">
+            <h3 className="text-sm font-medium text-white mb-4">Ownership Stats</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-gray-400">Items Remaining</p>
-                <p className="text-xl font-semibold text-white">
-                  {formatNumber(history.numberRemaining || history.assetStock)}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-400">Original Price</p>
-                <p className="text-xl font-semibold text-white">
-                  {formatNumber(history.originalPrice)} R$
-                </p>
-              </div>
+              {ownership.totalCopies !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">Total Copies</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(ownership.totalCopies)}
+                  </p>
+                </div>
+              )}
+              {ownership.availableCopies !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">Available Copies</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(ownership.availableCopies)}
+                  </p>
+                </div>
+              )}
+              {ownership.owners !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">Total Owners</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(ownership.owners)}
+                  </p>
+                </div>
+              )}
+              {ownership.premiumOwners !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">Premium Owners</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(ownership.premiumOwners)}
+                  </p>
+                </div>
+              )}
+              {ownership.hoardedCopies !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">Hoarded Copies</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(ownership.hoardedCopies)}
+                    {ownership.percentHoarded !== null && (
+                      <span className="text-sm text-gray-400 ml-1">
+                        ({ownership.percentHoarded.toFixed(1)}%)
+                      </span>
+                    )}
+                  </p>
+                </div>
+              )}
+              {ownership.deletedCopies !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">Deleted Copies</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(ownership.deletedCopies)}
+                  </p>
+                </div>
+              )}
+              {history.originalPrice && (
+                <div>
+                  <p className="text-xs text-gray-400">Original Price</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(history.originalPrice)} R$
+                  </p>
+                </div>
+              )}
+              {sales.rapAfterSale !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">RAP After Sale</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(sales.rapAfterSale)} R$
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}

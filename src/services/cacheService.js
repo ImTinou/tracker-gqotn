@@ -3,7 +3,7 @@
  */
 
 const CACHE_PREFIX = 'gqotn_cache_';
-const CACHE_VERSION = '4.0'; // Increment this to invalidate all caches - Fixed to use only real Rolimons data
+const CACHE_VERSION = '5.0'; // Increment this to invalidate all caches - Added full Rolimons scraping for ownership & sales data
 const VERSION_KEY = 'gqotn_cache_version';
 
 /**

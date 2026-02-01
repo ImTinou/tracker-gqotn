@@ -1,5 +1,6 @@
 // Vercel Serverless Function to scrape individual Rolimons item pages
 // This is needed for UGC Limiteds and newer items not in the itemdetails API
+// Updated: 2026-02-01
 
 export default async function handler(req, res) {
   // Enable CORS

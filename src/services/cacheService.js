@@ -3,6 +3,24 @@
  */
 
 const CACHE_PREFIX = 'gqotn_cache_';
+const CACHE_VERSION = '2.0'; // Increment this to invalidate all caches
+const VERSION_KEY = 'gqotn_cache_version';
+
+/**
+ * Check cache version and clear if outdated
+ */
+export const checkCacheVersion = () => {
+  try {
+    const currentVersion = localStorage.getItem(VERSION_KEY);
+    if (currentVersion !== CACHE_VERSION) {
+      console.log('Cache version outdated, clearing all cache...');
+      clearAllCache();
+      localStorage.setItem(VERSION_KEY, CACHE_VERSION);
+    }
+  } catch (error) {
+    console.error('Error checking cache version:', error);
+  }
+};
 
 /**
  * Store data in cache with expiration

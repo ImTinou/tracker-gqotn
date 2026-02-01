@@ -10,14 +10,14 @@ const StatCard = ({ title, value, change, changePercent, description }) => {
   };
 
   return (
-    <div className="bg-white overflow-hidden shadow rounded-lg">
+    <div className="bg-white/10 backdrop-blur-lg border border-white/20 overflow-hidden shadow-xl rounded-lg hover:bg-white/15 transition-all">
       <div className="p-5">
         <div className="flex items-center">
           <div className="flex-1">
-            <dt className="text-sm font-medium text-gray-500 truncate">{title}</dt>
-            <dd className="mt-1 text-3xl font-semibold text-gray-900">{value}</dd>
+            <dt className="text-sm font-medium text-gray-300 truncate">{title}</dt>
+            <dd className="mt-1 text-3xl font-semibold text-white">{value}</dd>
             {description && (
-              <p className="mt-1 text-xs text-gray-500">{description}</p>
+              <p className="mt-1 text-xs text-gray-400">{description}</p>
             )}
           </div>
         </div>
@@ -44,10 +44,10 @@ const PriceOverview = ({ marketData }) => {
     return (
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-white overflow-hidden shadow rounded-lg animate-pulse">
+          <div key={i} className="bg-white/10 backdrop-blur-lg border border-white/20 overflow-hidden shadow rounded-lg animate-pulse">
             <div className="p-5">
-              <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
-              <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-white/20 rounded w-1/2 mb-3"></div>
+              <div className="h-8 bg-white/20 rounded w-3/4"></div>
             </div>
           </div>
         ))}
@@ -69,7 +69,7 @@ const PriceOverview = ({ marketData }) => {
 
   return (
     <div>
-      <h2 className="text-lg font-medium text-gray-900 mb-4">Price Overview</h2>
+      <h2 className="text-lg font-medium text-white mb-4">Price Overview</h2>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="RAP (Recent Average Price)"

@@ -21,9 +21,9 @@ const PriceHistoryChart = ({ priceDataPoints }) => {
 
   if (!priceDataPoints || priceDataPoints.length === 0) {
     return (
-      <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Price History</h2>
-        <div className="h-96 flex items-center justify-center text-gray-500">
+      <div className="bg-white/10 backdrop-blur-lg border border-white/20 shadow rounded-lg p-6">
+        <h2 className="text-lg font-medium text-white mb-4">Price History</h2>
+        <div className="h-96 flex items-center justify-center text-gray-400">
           No price data available
         </div>
       </div>
@@ -63,20 +63,20 @@ const PriceHistoryChart = ({ priceDataPoints }) => {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-3 border border-gray-200 rounded shadow-lg">
-          <p className="text-sm text-gray-600 mb-1">
+        <div className="bg-slate-900/95 backdrop-blur-lg p-3 border border-white/20 rounded shadow-lg">
+          <p className="text-sm text-gray-300 mb-1">
             {format(parseISO(payload[0].payload.date), 'MMM dd, yyyy HH:mm')}
           </p>
-          <p className="text-sm font-semibold text-blue-600">
+          <p className="text-sm font-semibold text-blue-400">
             Price: {formatRobux(payload[0].value)}
           </p>
           {showMA7 && payload[1] && (
-            <p className="text-sm text-green-600">
+            <p className="text-sm text-green-400">
               MA(7): {formatRobux(payload[1].value)}
             </p>
           )}
           {showMA30 && payload[2] && (
-            <p className="text-sm text-purple-600">
+            <p className="text-sm text-purple-400">
               MA(30): {formatRobux(payload[2].value)}
             </p>
           )}
@@ -87,9 +87,9 @@ const PriceHistoryChart = ({ priceDataPoints }) => {
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
+    <div className="bg-white/10 backdrop-blur-lg border border-white/20 shadow-xl rounded-lg p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <h2 className="text-lg font-medium text-gray-900">Price History</h2>
+        <h2 className="text-lg font-medium text-white">Price History</h2>
 
         <div className="mt-4 sm:mt-0 flex items-center space-x-4">
           {/* Moving Averages Toggles */}
@@ -99,18 +99,18 @@ const PriceHistoryChart = ({ priceDataPoints }) => {
                 type="checkbox"
                 checked={showMA7}
                 onChange={(e) => setShowMA7(e.target.checked)}
-                className="rounded text-green-600 focus:ring-green-500"
+                className="rounded text-green-500 focus:ring-green-500"
               />
-              <span className="ml-2 text-gray-700">MA(7)</span>
+              <span className="ml-2 text-gray-300">MA(7)</span>
             </label>
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={showMA30}
                 onChange={(e) => setShowMA30(e.target.checked)}
-                className="rounded text-purple-600 focus:ring-purple-500"
+                className="rounded text-purple-500 focus:ring-purple-500"
               />
-              <span className="ml-2 text-gray-700">MA(30)</span>
+              <span className="ml-2 text-gray-300">MA(30)</span>
             </label>
           </div>
 
@@ -122,8 +122,8 @@ const PriceHistoryChart = ({ priceDataPoints }) => {
                 onClick={() => setTimeRange(range.value)}
                 className={`px-3 py-1 text-sm font-medium border ${
                   timeRange === range.value
-                    ? 'bg-blue-600 text-white border-blue-600 z-10'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-purple-600 z-10'
+                    : 'bg-white/10 text-gray-300 border-white/20 hover:bg-white/20'
                 } ${range.value === '24h' ? 'rounded-l-md' : ''} ${
                   range.value === 'all' ? 'rounded-r-md' : ''
                 } -ml-px first:ml-0`}
@@ -141,20 +141,22 @@ const PriceHistoryChart = ({ priceDataPoints }) => {
             data={chartData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
             <XAxis
               dataKey="timestamp"
               type="number"
               domain={['dataMin', 'dataMax']}
               tickFormatter={(tick) => format(new Date(tick), 'MMM dd')}
               stroke="#9ca3af"
+              tick={{ fill: '#9ca3af' }}
             />
             <YAxis
               tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
               stroke="#9ca3af"
+              tick={{ fill: '#9ca3af' }}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Legend />
+            <Legend wrapperStyle={{ color: '#fff' }} />
             <Line
               type="monotone"
               dataKey="price"
@@ -193,7 +195,7 @@ const PriceHistoryChart = ({ priceDataPoints }) => {
       </div>
 
       {filteredData.length === 0 && (
-        <div className="mt-4 text-center text-sm text-gray-500">
+        <div className="mt-4 text-center text-sm text-gray-400">
           No data available for the selected time range
         </div>
       )}

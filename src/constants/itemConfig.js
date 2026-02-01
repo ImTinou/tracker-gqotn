@@ -1,5 +1,11 @@
-// Configuration for the Green Queen of the Night item
-// TODO: Replace with actual Asset ID from Roblox catalog or Rolimons
+// Configuration for tracked Roblox items
+
+// Popular Roblox Limited items to track
+export const POPULAR_ITEMS = [
+  { id: '553970961', name: 'Green Queen of the Night', acronym: 'GQOTN' },
+  { id: '10159600649', name: '8-Bit Royal Crown', acronym: '8BRC' },
+  { id: '113598419875472', name: 'Helsworn Valkyrie', acronym: 'HELSV' },
+];
 
 export const ITEM_CONFIG = {
   // Asset ID - Green Queen of the Night

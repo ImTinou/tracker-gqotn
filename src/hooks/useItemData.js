@@ -4,10 +4,11 @@ import { ITEM_CONFIG } from '../constants/itemConfig';
 
 /**
  * Custom hook to fetch and manage item market data
+ * @param {string} itemId - Item ID to fetch data for
  * @param {boolean} autoRefresh - Enable auto-refresh (default: true)
  * @returns {Object} Market data and loading state
  */
-export const useItemData = (autoRefresh = true) => {
+export const useItemData = (itemId, autoRefresh = true) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +19,7 @@ export const useItemData = (autoRefresh = true) => {
       setLoading(true);
       setError(null);
 
-      const marketData = await fetchCompleteMarketData();
+      const marketData = await fetchCompleteMarketData(itemId);
       setData(marketData);
       setLastUpdated(new Date());
     } catch (err) {
@@ -27,7 +28,7 @@ export const useItemData = (autoRefresh = true) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [itemId]);
 
   // Initial fetch
   useEffect(() => {

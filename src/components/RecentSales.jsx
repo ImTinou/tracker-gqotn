@@ -10,9 +10,9 @@ const RecentSales = ({ priceDataPoints }) => {
 
   if (!priceDataPoints || priceDataPoints.length === 0) {
     return (
-      <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Recent Sales</h2>
-        <div className="text-center text-gray-500 py-8">
+      <div className="bg-white/10 backdrop-blur-lg border border-white/20 shadow rounded-lg p-6">
+        <h2 className="text-lg font-medium text-white mb-4">Recent Sales</h2>
+        <div className="text-center text-gray-400 py-8">
           No recent sales data available
         </div>
       </div>
@@ -84,18 +84,18 @@ const RecentSales = ({ priceDataPoints }) => {
   };
 
   const getTrendIcon = (change) => {
-    if (change > 0) return <ArrowUp className="w-4 h-4 text-green-600" />;
-    if (change < 0) return <ArrowDown className="w-4 h-4 text-red-600" />;
-    return <Minus className="w-4 h-4 text-gray-400" />;
+    if (change > 0) return <ArrowUp className="w-4 h-4 text-green-400" />;
+    if (change < 0) return <ArrowDown className="w-4 h-4 text-red-400" />;
+    return <Minus className="w-4 h-4 text-gray-500" />;
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
+    <div className="bg-white/10 backdrop-blur-lg border border-white/20 shadow-xl rounded-lg p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-medium text-gray-900">Recent Sales</h2>
+        <h2 className="text-lg font-medium text-white">Recent Sales</h2>
         <button
           onClick={exportToCSV}
-          className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          className="inline-flex items-center px-3 py-2 border border-white/20 rounded-md text-sm font-medium text-gray-300 bg-white/10 hover:bg-white/20"
         >
           <Download className="w-4 h-4 mr-2" />
           Export CSV
@@ -104,12 +104,12 @@ const RecentSales = ({ priceDataPoints }) => {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-white/10">
+          <thead className="bg-white/5">
             <tr>
               <th
                 onClick={() => handleSort('date')}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-white/10"
               >
                 <div className="flex items-center">
                   Date/Time
@@ -120,7 +120,7 @@ const RecentSales = ({ priceDataPoints }) => {
               </th>
               <th
                 onClick={() => handleSort('price')}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-white/10"
               >
                 <div className="flex items-center">
                   Price
@@ -129,21 +129,21 @@ const RecentSales = ({ priceDataPoints }) => {
                   )}
                 </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Change
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Time Ago
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-transparent divide-y divide-white/10">
             {displayedSales.map((sale, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr key={index} className="hover:bg-white/5">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                   {formatDate(sale.date)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                   {formatRobux(sale.value)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -158,10 +158,10 @@ const RecentSales = ({ priceDataPoints }) => {
                       </span>
                     </div>
                   ) : (
-                    <span className="text-gray-400">—</span>
+                    <span className="text-gray-500">—</span>
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                   {formatRelativeTime(sale.date)}
                 </td>
               </tr>
@@ -175,7 +175,7 @@ const RecentSales = ({ priceDataPoints }) => {
         <div className="mt-4 text-center">
           <button
             onClick={() => setDisplayCount(displayCount + 20)}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            className="inline-flex items-center px-4 py-2 border border-white/20 rounded-md text-sm font-medium text-gray-300 bg-white/10 hover:bg-white/20"
           >
             Load More ({salesWithChanges.length - displayCount} remaining)
           </button>
@@ -183,7 +183,7 @@ const RecentSales = ({ priceDataPoints }) => {
       )}
 
       {/* Summary */}
-      <div className="mt-4 text-sm text-gray-500 text-center">
+      <div className="mt-4 text-sm text-gray-400 text-center">
         Showing {displayedSales.length} of {salesWithChanges.length} sales
       </div>
     </div>

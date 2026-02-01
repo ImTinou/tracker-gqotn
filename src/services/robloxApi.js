@@ -4,13 +4,15 @@ import { getCache, setCache } from './cacheService';
 
 /**
  * Fetch item data from Rolimons API
+ * @param {string} itemId - Optional item ID (defaults to ITEM_CONFIG.assetId)
  * @returns {Promise<Object>} Item data
  */
-export const fetchItemData = async () => {
+export const fetchItemData = async (itemId = ITEM_CONFIG.assetId) => {
   // Check cache first
-  const cached = getCache('itemData');
+  const cacheKey = `itemData_${itemId}`;
+  const cached = getCache(cacheKey);
   if (cached) {
-    console.log('Using cached item data');
+    console.log('Using cached item data for', itemId);
     return cached;
   }
 
@@ -19,7 +21,7 @@ export const fetchItemData = async () => {
     const response = await axios.get(`${ITEM_CONFIG.apiBaseUrl}/api/rolimons`);
 
     const allItems = response.data.items;
-    const itemArray = allItems[ITEM_CONFIG.assetId];
+    const itemArray = allItems[itemId];
 
     if (!itemArray) {
       throw new Error('Item not found in Rolimons data');
@@ -27,7 +29,7 @@ export const fetchItemData = async () => {
 
     // Rolimons returns data as array: [name, acronym, rap, value, default_value, demand, trend, ...]
     const enrichedData = {
-      assetId: ITEM_CONFIG.assetId,
+      assetId: itemId,
       name: itemArray[0],
       acronym: itemArray[1],
       rap: itemArray[2],
@@ -35,12 +37,12 @@ export const fetchItemData = async () => {
       default_value: itemArray[4],
       demand: itemArray[5],
       trend: itemArray[6],
-      rare: true, // Green Queen of the Night is a rare item
+      rare: true,
       lastUpdated: new Date().toISOString(),
     };
 
     // Cache the data
-    setCache('itemData', enrichedData, ITEM_CONFIG.cache.itemData);
+    setCache(cacheKey, enrichedData, ITEM_CONFIG.cache.itemData);
 
     return enrichedData;
   } catch (error) {
@@ -52,13 +54,15 @@ export const fetchItemData = async () => {
 /**
  * Fetch price history from Roblox Resale API
  * Note: This may require a proxy due to CORS restrictions
+ * @param {string} itemId - Optional item ID (defaults to ITEM_CONFIG.assetId)
  * @returns {Promise<Object>} Resale data with price history
  */
-export const fetchPriceHistory = async () => {
+export const fetchPriceHistory = async (itemId = ITEM_CONFIG.assetId) => {
   // Check cache first
-  const cached = getCache('priceHistory');
+  const cacheKey = `priceHistory_${itemId}`;
+  const cached = getCache(cacheKey);
   if (cached) {
-    console.log('Using cached price history');
+    console.log('Using cached price history for', itemId);
     return cached;
   }
 
@@ -66,13 +70,13 @@ export const fetchPriceHistory = async () => {
     // Try to fetch from Roblox Economy API with CORS proxy
     // Use Vercel serverless function to avoid CORS issues
     const response = await axios.get(
-      `${ITEM_CONFIG.apiBaseUrl}/api/roblox?assetId=${ITEM_CONFIG.assetId}`
+      `${ITEM_CONFIG.apiBaseUrl}/api/roblox?assetId=${itemId}`
     );
 
     const data = response.data;
 
     // Cache the data
-    setCache('priceHistory', data, ITEM_CONFIG.cache.priceHistory);
+    setCache(cacheKey, data, ITEM_CONFIG.cache.priceHistory);
 
     return data;
   } catch (error) {
@@ -80,17 +84,18 @@ export const fetchPriceHistory = async () => {
 
     // Fallback: Generate mock data from Rolimons data
     console.warn('Using fallback mock data for price history');
-    return generateMockPriceHistory();
+    return generateMockPriceHistory(itemId);
   }
 };
 
 /**
  * Generate mock price history data (fallback when API unavailable)
+ * @param {string} itemId - Optional item ID (defaults to ITEM_CONFIG.assetId)
  * @returns {Object} Mock price history data
  */
-const generateMockPriceHistory = async () => {
+const generateMockPriceHistory = async (itemId = ITEM_CONFIG.assetId) => {
   try {
-    const itemData = await fetchItemData();
+    const itemData = await fetchItemData(itemId);
 
     // Generate mock data points around the RAP value
     const now = new Date();
@@ -150,13 +155,14 @@ const generateMockVolumeData = () => {
 
 /**
  * Fetch complete market data (item data + price history)
+ * @param {string} itemId - Optional item ID (defaults to ITEM_CONFIG.assetId)
  * @returns {Promise<Object>} Complete market data
  */
-export const fetchCompleteMarketData = async () => {
+export const fetchCompleteMarketData = async (itemId = ITEM_CONFIG.assetId) => {
   try {
     const [itemData, priceHistory] = await Promise.all([
-      fetchItemData(),
-      fetchPriceHistory(),
+      fetchItemData(itemId),
+      fetchPriceHistory(itemId),
     ]);
 
     return {

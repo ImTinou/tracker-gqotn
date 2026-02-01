@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { POPULAR_ITEMS } from '../constants/itemConfig';
 import { TrendingUp, BarChart3, Activity } from 'lucide-react';
+import ItemImage from '../components/ItemImage';
 
 const HomePage = () => {
   return (
@@ -59,13 +60,10 @@ const HomePage = () => {
 
                 {/* Item Image */}
                 <div className="relative aspect-square bg-gradient-to-br from-slate-800 to-slate-900 p-8">
-                  <img
-                    src={`https://tr.rbxcdn.com/${item.id}/420/420/Hat/Png`}
+                  <ItemImage
+                    assetId={item.id}
                     alt={item.name}
                     className="w-full h-full object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-110"
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/420x420/1e293b/64748b?text=No+Image';
-                    }}
                   />
 
                   {/* Acronym Badge */}

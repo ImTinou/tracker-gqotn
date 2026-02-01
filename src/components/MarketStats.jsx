@@ -29,7 +29,7 @@ const MarketStats = ({ marketData }) => {
 
   const volumeStats = calculateVolumeStats(volumeDataPoints);
   const demandLevel = calculateDemandLevel(volumeStats.average);
-  const volatility = calculateVolatility(priceDataPoints);
+  const volatility = calculateVolatility(priceDataPoints) || 0;
   const trend = detectTrend(priceDataPoints);
 
   const getDemandColor = (level) => {

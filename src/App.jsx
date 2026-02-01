@@ -90,12 +90,12 @@ function App() {
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Price History Chart - Takes 2 columns */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 min-h-0">
               <PriceHistoryChart priceDataPoints={data?.history?.priceDataPoints} />
             </div>
 
             {/* Market Stats - Takes 1 column */}
-            <div>
+            <div className="min-h-0">
               <MarketStats marketData={data} />
             </div>
           </div>

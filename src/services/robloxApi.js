@@ -15,12 +15,8 @@ export const fetchItemData = async () => {
   }
 
   try {
-    // Use CORS proxy for GitHub Pages deployment
-    const corsProxy = 'https://api.allorigins.win/raw?url=';
-    const targetUrl = encodeURIComponent(
-      `${ITEM_CONFIG.apis.rolimons.baseUrl}${ITEM_CONFIG.apis.rolimons.itemDetailsEndpoint}`
-    );
-    const response = await axios.get(`${corsProxy}${targetUrl}`);
+    // Use Vercel serverless function to avoid CORS issues
+    const response = await axios.get(`${ITEM_CONFIG.apiBaseUrl}/api/rolimons`);
 
     const allItems = response.data.items;
     const itemData = allItems[ITEM_CONFIG.assetId];
@@ -61,11 +57,10 @@ export const fetchPriceHistory = async () => {
 
   try {
     // Try to fetch from Roblox Economy API with CORS proxy
-    const corsProxy = 'https://api.allorigins.win/raw?url=';
-    const targetUrl = encodeURIComponent(
-      `${ITEM_CONFIG.apis.roblox.economyUrl}/assets/${ITEM_CONFIG.assetId}/resale-data`
+    // Use Vercel serverless function to avoid CORS issues
+    const response = await axios.get(
+      `${ITEM_CONFIG.apiBaseUrl}/api/roblox?assetId=${ITEM_CONFIG.assetId}`
     );
-    const response = await axios.get(`${corsProxy}${targetUrl}`);
 
     const data = response.data;
 

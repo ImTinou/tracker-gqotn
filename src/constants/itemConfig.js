@@ -9,6 +9,9 @@ export const ITEM_CONFIG = {
   acronym: 'GQOTN',
 
   // API Configuration
+  // Vercel serverless API for CORS-free access
+  apiBaseUrl: import.meta.env.VITE_API_URL || 'https://tracker-gqotn.vercel.app',
+
   apis: {
     rolimons: {
       baseUrl: 'https://www.rolimons.com',

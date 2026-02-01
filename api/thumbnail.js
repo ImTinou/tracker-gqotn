@@ -1,4 +1,5 @@
 // Vercel Serverless Function to proxy Roblox Thumbnail API
+// Fixes CORS issues from GitHub Pages
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');

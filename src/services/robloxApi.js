@@ -19,16 +19,23 @@ export const fetchItemData = async () => {
     const response = await axios.get(`${ITEM_CONFIG.apiBaseUrl}/api/rolimons`);
 
     const allItems = response.data.items;
-    const itemData = allItems[ITEM_CONFIG.assetId];
+    const itemArray = allItems[ITEM_CONFIG.assetId];
 
-    if (!itemData) {
+    if (!itemArray) {
       throw new Error('Item not found in Rolimons data');
     }
 
-    // Add assetId to the data
+    // Rolimons returns data as array: [name, acronym, rap, value, default_value, demand, trend, ...]
     const enrichedData = {
-      ...itemData,
       assetId: ITEM_CONFIG.assetId,
+      name: itemArray[0],
+      acronym: itemArray[1],
+      rap: itemArray[2],
+      value: itemArray[3],
+      default_value: itemArray[4],
+      demand: itemArray[5],
+      trend: itemArray[6],
+      rare: true, // Green Queen of the Night is a rare item
       lastUpdated: new Date().toISOString(),
     };
 

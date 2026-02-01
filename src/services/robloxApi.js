@@ -15,9 +15,12 @@ export const fetchItemData = async () => {
   }
 
   try {
-    const response = await axios.get(
+    // Use CORS proxy for GitHub Pages deployment
+    const corsProxy = 'https://api.allorigins.win/raw?url=';
+    const targetUrl = encodeURIComponent(
       `${ITEM_CONFIG.apis.rolimons.baseUrl}${ITEM_CONFIG.apis.rolimons.itemDetailsEndpoint}`
     );
+    const response = await axios.get(`${corsProxy}${targetUrl}`);
 
     const allItems = response.data.items;
     const itemData = allItems[ITEM_CONFIG.assetId];
@@ -57,10 +60,12 @@ export const fetchPriceHistory = async () => {
   }
 
   try {
-    // Try to fetch from Roblox Economy API
-    const response = await axios.get(
+    // Try to fetch from Roblox Economy API with CORS proxy
+    const corsProxy = 'https://api.allorigins.win/raw?url=';
+    const targetUrl = encodeURIComponent(
       `${ITEM_CONFIG.apis.roblox.economyUrl}/assets/${ITEM_CONFIG.assetId}/resale-data`
     );
+    const response = await axios.get(`${corsProxy}${targetUrl}`);
 
     const data = response.data;
 

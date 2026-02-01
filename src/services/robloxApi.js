@@ -58,10 +58,10 @@ export const fetchItemData = async (itemId = ITEM_CONFIG.assetId) => {
 };
 
 /**
- * Fetch price history from Roblox Resale API
- * Note: This may require a proxy due to CORS restrictions
+ * Fetch price history from Rolimons sales page
+ * Gets REAL sales data with timestamps and prices
  * @param {string} itemId - Optional item ID (defaults to ITEM_CONFIG.assetId)
- * @returns {Promise<Object>} Resale data with price history
+ * @returns {Promise<Object>} Real sales data with price history
  */
 export const fetchPriceHistory = async (itemId = ITEM_CONFIG.assetId) => {
   // Check cache first
@@ -73,37 +73,57 @@ export const fetchPriceHistory = async (itemId = ITEM_CONFIG.assetId) => {
   }
 
   try {
-    // DON'T use Roblox API - it returns fake/incorrect/old data
-    // Instead, use only Rolimons RAP/Value data which is accurate
+    // Fetch real sales data from Rolimons sales page
+    const salesResponse = await axios.get(
+      `${ITEM_CONFIG.apiBaseUrl}/api/rolimons-sales?itemId=${itemId}`
+    );
+
+    const salesData = salesResponse.data;
     const itemData = await fetchItemData(itemId);
 
-    // Create minimal data structure based on REAL Rolimons data only
-    const now = new Date();
-    const mockData = {
+    // Build volume data points from sales
+    const volumeDataPoints = calculateVolumeFromSales(salesData.priceDataPoints);
+
+    const priceHistory = {
       assetStock: null,
-      sales: null,
+      sales: salesData.stats.allTimeSales,
       numberRemaining: null,
       recentAveragePrice: itemData.rap,
       originalPrice: itemData.default_value || null,
-      // Only provide current value as a single data point - no fake history
-      priceDataPoints: [
-        {
-          value: itemData.value || itemData.rap,
-          date: now.toISOString(),
-        }
-      ],
-      volumeDataPoints: [],
-      _isRolimonsOnly: true,
+      priceDataPoints: salesData.priceDataPoints,
+      volumeDataPoints: volumeDataPoints,
+      stats: salesData.stats, // Include aggregate stats
+      _isRealRolimonsData: true,
     };
 
     // Cache the data
-    setCache(cacheKey, mockData, ITEM_CONFIG.cache.priceHistory);
+    setCache(cacheKey, priceHistory, ITEM_CONFIG.cache.priceHistory);
 
-    return mockData;
+    return priceHistory;
   } catch (error) {
-    console.error('Error fetching price data:', error);
+    console.error('Error fetching price history:', error);
     throw error;
   }
+};
+
+/**
+ * Calculate volume data points from sales data
+ * Groups sales by day and counts them
+ * @param {Array} priceDataPoints - Array of sale data points
+ * @returns {Array} Volume data points grouped by day
+ */
+const calculateVolumeFromSales = (priceDataPoints) => {
+  const volumeByDay = {};
+
+  priceDataPoints.forEach(point => {
+    const date = point.date.split('T')[0]; // Get YYYY-MM-DD
+    volumeByDay[date] = (volumeByDay[date] || 0) + 1;
+  });
+
+  return Object.entries(volumeByDay).map(([date, count]) => ({
+    value: count,
+    date: date,
+  })).sort((a, b) => new Date(a.date) - new Date(b.date));
 };
 
 /**

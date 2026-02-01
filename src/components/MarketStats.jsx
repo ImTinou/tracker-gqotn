@@ -24,6 +24,9 @@ const MarketStats = ({ marketData }) => {
   const ownership = item?.ownership || {};
   const sales = item?.sales || {};
 
+  // Extract sales stats from history (if available from sales page scraping)
+  const salesStats = history?.stats || {};
+
   const volumeStats = calculateVolumeStats(volumeDataPoints);
   const demandLevel = calculateDemandLevel(volumeStats.average);
   const volatility = calculateVolatility(priceDataPoints);
@@ -55,19 +58,35 @@ const MarketStats = ({ marketData }) => {
           <div className="grid grid-cols-2 gap-4 ml-7">
             <div>
               <p className="text-xs text-gray-400">Last 24 Hours</p>
-              <p className="text-xl font-semibold text-white">{formatNumber(volumeStats.last24h)}</p>
+              <p className="text-xl font-semibold text-white">
+                {salesStats.pastDaySales !== undefined
+                  ? formatNumber(salesStats.pastDaySales)
+                  : formatNumber(volumeStats.last24h)}
+              </p>
             </div>
             <div>
               <p className="text-xs text-gray-400">Last 7 Days</p>
-              <p className="text-xl font-semibold text-white">{formatNumber(volumeStats.last7d)}</p>
+              <p className="text-xl font-semibold text-white">
+                {salesStats.pastWeekSales !== undefined
+                  ? formatNumber(salesStats.pastWeekSales)
+                  : formatNumber(volumeStats.last7d)}
+              </p>
             </div>
             <div>
               <p className="text-xs text-gray-400">Last 30 Days</p>
-              <p className="text-xl font-semibold text-white">{formatNumber(volumeStats.last30d)}</p>
+              <p className="text-xl font-semibold text-white">
+                {salesStats.pastMonthSales !== undefined
+                  ? formatNumber(salesStats.pastMonthSales)
+                  : formatNumber(volumeStats.last30d)}
+              </p>
             </div>
             <div>
               <p className="text-xs text-gray-400">Total Volume</p>
-              <p className="text-xl font-semibold text-white">{formatCompact(volumeStats.total)}</p>
+              <p className="text-xl font-semibold text-white">
+                {salesStats.allTimeSales !== undefined
+                  ? formatCompact(salesStats.allTimeSales)
+                  : formatCompact(volumeStats.total)}
+              </p>
             </div>
           </div>
         </div>
@@ -192,6 +211,22 @@ const MarketStats = ({ marketData }) => {
                   <p className="text-xs text-gray-400">Deleted Copies</p>
                   <p className="text-xl font-semibold text-white">
                     {formatNumber(ownership.deletedCopies)}
+                  </p>
+                </div>
+              )}
+              {salesStats.activeSellers !== undefined && salesStats.activeSellers > 0 && (
+                <div>
+                  <p className="text-xs text-gray-400">Active Sellers</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(salesStats.activeSellers)}
+                  </p>
+                </div>
+              )}
+              {salesStats.bestPrice !== undefined && salesStats.bestPrice !== null && (
+                <div>
+                  <p className="text-xs text-gray-400">Best Price</p>
+                  <p className="text-xl font-semibold text-white">
+                    {formatNumber(salesStats.bestPrice)} R$
                   </p>
                 </div>
               )}

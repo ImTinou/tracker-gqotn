@@ -3,7 +3,7 @@
  */
 
 const CACHE_PREFIX = 'gqotn_cache_';
-const CACHE_VERSION = '5.0'; // Increment this to invalidate all caches - Added full Rolimons scraping for ownership & sales data
+const CACHE_VERSION = '6.0'; // Increment this to invalidate all caches - Added real sales history from Rolimons itemsales page
 const VERSION_KEY = 'gqotn_cache_version';
 
 /**

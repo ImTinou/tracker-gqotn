@@ -165,8 +165,8 @@ const PricePrediction = ({ priceDataPoints }) => {
       </div>
 
       {/* Projection Chart */}
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
+      <div style={{ width: '100%', height: 256 }}>
+        <ResponsiveContainer>
           <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis

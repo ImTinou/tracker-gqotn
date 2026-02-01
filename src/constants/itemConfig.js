@@ -2,8 +2,8 @@
 // TODO: Replace with actual Asset ID from Roblox catalog or Rolimons
 
 export const ITEM_CONFIG = {
-  // Asset ID - Find this on Rolimons or Roblox catalog
-  assetId: '1365767', // Placeholder - need to find actual ID
+  // Asset ID - Green Queen of the Night
+  assetId: '553970961',
 
   name: 'Green Queen of the Night',
   acronym: 'GQOTN',
